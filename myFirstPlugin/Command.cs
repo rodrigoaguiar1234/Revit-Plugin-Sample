@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using Autodesk.Revit.Creation;
 using System.Windows.Controls;
 using System.Xml.Linq;
+using System.Linq.Expressions;
 
 
 
@@ -36,21 +37,27 @@ namespace myFirstPlugin
                 XYZ start = new XYZ(0, 0, 0);
                 XYZ end = new XYZ(30, 30, 0);
                 Line geomLine = Line.CreateBound(start, end);
-
+                string Nome = "RAA";
                 // Create a grid using the geometry line
                 Autodesk.Revit.DB.Grid lineGrid = Autodesk.Revit.DB.Grid.Create(doc, geomLine);
 
-                if (null == lineGrid)
+
+                if (null == lineGrid || lineGrid.Name == Nome)
                 {
                     throw new Exception("Create a new straight grid failed.");
                 }
 
-                string Nome = "RAA";
-                // Modify the name of the created grid
-                if (lineGrid.Name != Nome)
+                try
                 {
+                    // Modify the name of the created grid
                     lineGrid.Name = Nome;
                 }
+                catch
+                {
+                    MessageBox.Show("Grid Already Created");
+                }
+
+
                 transaction.Commit();
             }
             return Result.Succeeded;
